@@ -7,11 +7,11 @@ use AC\Asset\Location;
 use AC\Column;
 use AC\ColumnRepository;
 use AC\ListScreenRepository\Storage;
-use AC\Registrable;
+use AC\Registerable;
 use ACP\Bookmark;
 use ACP\Sorting\Controller;
 
-class Addon implements Registrable {
+class Addon implements Registerable {
 
 	/**
 	 * @var Storage
@@ -38,12 +38,16 @@ class Addon implements Registrable {
 	 */
 	private $segment_repository;
 
-	public function __construct( Storage $storage, Location\Absolute $location, NativeSortableFactory $native_sortable_factory, ModelFactory $model_factory, Bookmark\SegmentRepository $segment_repository ) {
+	public function __construct(
+		Storage $storage,
+		Location\Absolute $location,
+		Bookmark\SegmentRepository $segment_repository
+	) {
 		$this->storage = $storage;
 		$this->location = $location;
-		$this->native_sortable_factory = $native_sortable_factory;
-		$this->model_factory = $model_factory;
 		$this->segment_repository = $segment_repository;
+		$this->native_sortable_factory = new NativeSortableFactory();
+		$this->model_factory = new ModelFactory();
 	}
 
 	public function register() {
@@ -56,7 +60,7 @@ class Addon implements Registrable {
 		];
 
 		foreach ( $services as $service ) {
-			if ( $service instanceof Registrable ) {
+			if ( $service instanceof Registerable ) {
 				$service->register();
 			}
 		}
@@ -113,9 +117,9 @@ class Addon implements Registrable {
 	 * @deprecated 5.1
 	 */
 	public function show_all_results() {
-		_deprecated_function( __METHOD__, '5.1', 'acp_sorting_show_all_results()' );
+		_deprecated_function( __METHOD__, '5.1' );
 
-		return acp_sorting_show_all_results();
+		return false;
 	}
 
 }

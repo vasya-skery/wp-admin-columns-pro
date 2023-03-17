@@ -61,7 +61,7 @@ class Post extends Strategy {
 	protected function get_posts( array $args = [] ) {
 		$query_vars = $this->wp_query ? $this->wp_query->query_vars : [];
 
-		if ( ! isset( $query_vars['post_status'] ) || empty( $query_vars['post_status'] ) ) {
+		if ( empty( $query_vars['post_status'] ) ) {
 			$query_vars['post_status'] = [ 'any' ];
 		}
 
@@ -95,13 +95,17 @@ class Post extends Strategy {
 	}
 
 	/**
-	 * @rerturn array
+	 * @return array
 	 */
 	public function get_post_status() {
 		$status = $this->wp_query->get( 'post_status' );
 
 		if ( empty( $status ) ) {
 			return [];
+		}
+
+		if ( is_array( $status ) ) {
+			return $status;
 		}
 
 		if ( false !== strpos( $status, ',' ) ) {

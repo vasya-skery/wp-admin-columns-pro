@@ -2,7 +2,7 @@
 
 use AC\ListScreen;
 use AC\View;
-use ACP\Controller\ListScreenCreate;
+use ACP\RequestHandler\ListScreenCreate;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php
 	$view = new View( [
 		'list_screen' => $this->list_screen,
-		'nonce'       => wp_create_nonce( 'create-layout' ),
 	] );
 
 	$view->set_template( 'admin/create-list-screen' );
@@ -123,9 +122,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="layouts__item__actions">
 							<?php if ( ! $list_screen->is_read_only() ): ?>
 								<form method="post" class="delete">
-									<input type="hidden" name="_ac_nonce" value="<?= wp_create_nonce( 'delete-layout' ); ?>"/>
+									<?= ( new \ACP\Nonce\LayoutNonce() )->create_field() ?>
 									<input type="hidden" name="<?= ListScreenCreate::PARAM_ACTION; ?>" value="<?= ListScreenCreate::PARAM_DELETE_LIST; ?>">
-									<input type="hidden" name="layout_id" value="<?= esc_attr( $list_screen->get_layout_id() ); ?>">
+									<input type="hidden" name="ac_delete_layout_id" value="<?= esc_attr( $list_screen->get_layout_id() ); ?>">
 									<input type="hidden" name="list_screen" value="<?= esc_attr( $list_screen->get_key() ); ?>">
 									<input type="submit" class="delete" value="<?= esc_attr( __( 'Delete', 'codepress-admin-columns' ) ); ?>"<?= $onclick; ?>/>
 								</form>

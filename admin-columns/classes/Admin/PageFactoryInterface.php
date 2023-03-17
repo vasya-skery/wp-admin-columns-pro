@@ -3,14 +3,13 @@
 namespace AC\Admin;
 
 use AC;
+use AC\Renderable;
 
 interface PageFactoryInterface {
 
 	/**
-	 * @param string $slug
-	 *
-	 * @return Page|null
+	 * @return Renderable
 	 */
-	public function create( $slug );
+	public function create();
 
 }

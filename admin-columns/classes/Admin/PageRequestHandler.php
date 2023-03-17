@@ -8,22 +8,30 @@ use AC\Request;
 class PageRequestHandler implements RequestHandlerInterface {
 
 	/**
-	 * @var PageFactory
+	 * @var PageFactoryInterface[]
 	 */
-	private $page_factory;
+	private $factories;
 
 	/**
-	 * @var string
+	 * @param string               $slug
+	 * @param PageFactoryInterface $factory
+	 *
+	 * @return $this
 	 */
-	private $default;
+	public function add( $slug, PageFactoryInterface $factory ) {
+		$this->factories[ (string) $slug ] = $factory;
 
-	public function __construct( PageFactory $page_factory, $default = '' ) {
-		$this->page_factory = $page_factory;
-		$this->default = $default;
+		return $this;
 	}
 
 	public function handle( Request $request ) {
-		return $this->page_factory->create( $request->get_query()->get( self::PARAM_TAB ) ?: $this->default );
+		$slug = $request->get_query()->get( self::PARAM_TAB ) ?: 'columns';
+
+		$page = isset( $this->factories[ $slug ] )
+			? $this->factories[ $slug ]->create()
+			: null;
+
+		return apply_filters( 'ac/admin/request/page', $page, $request );
 	}
 
 }

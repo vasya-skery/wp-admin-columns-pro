@@ -8,9 +8,9 @@ use AC\ListScreenRepository\Filter;
 use AC\ListScreenRepository\Sort;
 use AC\ListScreenRepository\Storage;
 use AC\PermissionChecker;
-use AC\Registrable;
+use AC\Registerable;
 
-class Switcher implements Registrable {
+class Switcher implements Registerable {
 
 	/** @var Storage */
 	private $storage;
@@ -24,13 +24,13 @@ class Switcher implements Registrable {
 	}
 
 	private function add_filter_args_to_url( $link ) {
-		$post_status = filter_input( INPUT_GET, 'post_status', FILTER_SANITIZE_STRING );
+		$post_status = filter_input( INPUT_GET, 'post_status', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( $post_status ) {
 			$link = add_query_arg( [ 'post_status' => $post_status ], $link );
 		}
 
-		$author = filter_input( INPUT_GET, 'author', FILTER_SANITIZE_STRING );
+		$author = filter_input( INPUT_GET, 'author', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( $author ) {
 			$link = add_query_arg( [ 'author' => $author ], $link );

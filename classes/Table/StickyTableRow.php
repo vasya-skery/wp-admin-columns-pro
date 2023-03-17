@@ -6,9 +6,11 @@ use AC;
 use AC\ListScreenRepository\Storage;
 use AC\Type\ListScreenId;
 
-class StickyTableRow implements AC\Registrable {
+class StickyTableRow implements AC\Registerable {
 
-	/** @var Storage */
+	/**
+	 * @var Storage
+	 */
 	private $storage;
 
 	public function __construct( Storage $storage ) {
@@ -36,7 +38,7 @@ class StickyTableRow implements AC\Registrable {
 	}
 
 	public function is_sticky( $key ) {
-		return (bool) $this->preferences()->get( $key );
+		return (bool) apply_filters( 'acp/sticky_header/enable', $this->preferences()->get( $key ) );
 	}
 
 	public function update_sticky_table() {
@@ -60,6 +62,12 @@ class StickyTableRow implements AC\Registrable {
 	 * @param AC\Table\Screen $table
 	 */
 	public function register_screen_option( $table ) {
+		$list_screen = $table->get_list_screen();
+
+		if ( ! $list_screen->get_settings() ) {
+			return;
+		}
+
 		$check_box = ( new AC\Form\Element\Checkbox( 'acp_sticky_table_row' ) )
 			->set_options( [
 				'yes' => __( 'Sticky Headers', 'codepress-admin-columns' ),

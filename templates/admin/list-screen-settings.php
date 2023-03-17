@@ -1,6 +1,7 @@
 <?php
 
 use AC\Form\Element\Select;
+use AC\Form\Element\Toggle;
 use ACP\Bookmark\Setting\PreferredSegment;
 use ACP\Sorting\Settings\ListScreen\PreferredSort;
 
@@ -9,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<section class="ac-setbox ac-ls-settings ac-section -closable" data-section="ls-settings">
+<section class="ac-setbox ac-ls-settings ac-section" data-section="ls-settings">
 	<header class="ac-section__header">
 		<div class="ac-setbox__header__title"><?= __( 'Settings', 'codepress-admin-columns' ); ?>
 			<small>(<?= __( 'optional', 'codepress-admin-columns' ); ?>)</small>
@@ -49,8 +50,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div class="ac-setbox__row" id="hide-on-screen">
 			<div class="ac-setbox__row__th">
-				<label><?= __( 'Hide on screen', 'codepress-admin-columns' ); ?></label>
-				<small><?= __( 'Select items to hide from the list table screen.', 'codepress-admin-columns' ); ?></small>
+				<label><?= __( 'Toggle Elements', 'codepress-admin-columns' ); ?></label>
+				<small><?= __( 'Show or hide elements from the table list screen.', 'codepress-admin-columns' ); ?></small>
 			</div>
 			<div class="ac-setbox__row__fields">
 				<div class="ac-setbox__row__fields__inner">
@@ -87,11 +88,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php echo $this->tooltip_hs->get_instructions(); ?>
 							</div>
 							<div class="ac-setbox__row__fields">
+
 								<div class="ac-setbox__row__fields__inner">
-									<div class="radio-labels radio-labels">
-										<label class="ac-setting-input_filter"><input name="horizontal_scrolling" type="radio" value="on" <?php checked( $pref_hs, 'on' ); ?>><?= __( 'Yes' ); ?></label>
-										<label class="ac-setting-input_filter"><input name="horizontal_scrolling" type="radio" value="off" <?php checked( $pref_hs, 'off' ); ?>><?= __( 'No' ); ?></label>
-									</div>
+									<?php
+									$toggle = new Toggle( 'horizontal_scrolling', '', $pref_hs === 'on', 'on', 'off' );
+									echo $toggle->render();
+									?>
 								</div>
 							</div>
 						</div>
@@ -158,6 +160,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php else: ?>
 										<p class="ac-setbox__descriptive">
 											<?php _e( "No public saved filters available.", 'codepress-admin-columns' ); ?>
+										</p>
+									<?php endif; ?>
+								</div>
+							</div>
+						</div>
+
+					<?php endif; ?>
+
+					<?php if ( $this->can_primary_column ) : ?>
+
+						<div class="ac-setbox__row -sub -primary-column">
+							<div class="ac-setbox__row__th">
+								<label><?= __( 'Primary Column', 'codepress-admin-columns' ); ?></label>
+								<?php echo $this->tooltip_primary_column->get_label(); ?>
+								<?php echo $this->tooltip_primary_column->get_instructions(); ?>
+							</div>
+							<div class="ac-setbox__row__fields">
+								<div class="ac-setbox__row__fields__inner">
+									<?php if ( $this->primary_columns ) : ?>
+										<div class="radio-labels radio-labels">
+											<?php
+											$select = new Select( 'primary_column', $this->primary_columns );
+
+											echo $select->set_class( 'primary_column' )->set_value( $this->primary_column );
+											?>
+										</div>
+									<?php else : ?>
+										<p class="ac-setbox__descriptive">
+											<?php _e( "Remove actions column to change the primary column.", 'codepress-admin-columns' ); ?>
 										</p>
 									<?php endif; ?>
 								</div>
